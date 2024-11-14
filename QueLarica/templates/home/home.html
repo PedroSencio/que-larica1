@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Que Larica!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/home/style.css') }}">
+</head>
+<body>
+
+<div class="container" id="main-container">
+    
+    <div class="button-return" id="button-return" style="display: none;">
+        <button class="return-button" onclick="showForm('voltar')">Voltar</button>
+    </div>
+
+    <div class="logo">
+        <img src="{{ url_for('static', filename='img/home/logo.png') }}" alt="Logo">
+    </div>
+
+    <div class="button-choice" id="button-choice">
+    <button class="button cliente" onclick="showForm('cliente')">Cliente</button>
+    <button class="button restaurante" onclick="showForm('restaurante')">Restaurante</button>
+    <button class="button entregador" onclick="showForm('entregador')">Entregador</button>
+    </div>
+
+
+    <div class="login-form" id="login-form" style="display: none;">
+        <input type="email" placeholder="E-mail" id="email">
+        <input type="password" placeholder="Senha" id="password">
+        <button class="form-button">Entrar</button>
+        <button class="form-button">Cadastro</button>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='script/home/login.js') }}"></script>
+</body>
+</html>
+
