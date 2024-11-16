@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Que Larica!</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/home/style.css') }}">
 </head>
+
 <body>
 
 <div class="container" id="main-container">
@@ -28,12 +30,14 @@
     <div class="login-form" id="login-form" style="display: none;">
         <input type="email" placeholder="E-mail" id="email">
         <input type="password" placeholder="Senha" id="password">
-        <button class="form-button">Entrar</button>
-        <button class="form-button">Cadastro</button>
+        <button class="form-buttonE" id="button-loggin">Entrar</button>
+        <button class="form-buttonC" id="button-cadastro">Cadastro</button>
     </div>
 </div>
 
 <script src="{{ url_for('static', filename='script/home/login.js') }}"></script>
+<script src="{{ url_for('static', filename='script/home/tentativa_login.js') }}"></script>
+
 </body>
 </html>
 

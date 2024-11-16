@@ -18,7 +18,7 @@ body, html {
     width: 600px;
     height: 600px;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.8); /* Fundo semi-transparente */
+    background-color: rgba(255, 255, 255, 0.2); 
     border-radius: 15px;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -33,20 +33,19 @@ body, html {
     background-position: center;
     background-color: transparent;
     border: none;
-    color: transparent; /* Tornar o texto invisível */
-    width: 120px; /* Ajuste o tamanho do botão */
-    height: 40px; /* Ajuste o tamanho do botão */
+    color: transparent; 
+    width: 120px; 
+    height: 40px; 
     cursor: pointer;
     transition: opacity 0.5s ease;
-    opacity: 1; /* Torna o botão um pouco transparente */
+    opacity: 1; 
     position: absolute;
-    top: 35px; /* Distância do topo */
-    left: 10px; /* Distância da esquerda */
+    top: 35px; 
+    left: 10px; 
 }
 
-
 .logo img {
-    max-width: 400px; /* Tamanho da logo */
+    max-width: 400px; 
 }
 
 .button {
@@ -60,8 +59,6 @@ body, html {
     transition: background 0.3s;
 }
 
-
-
 .cliente { 
     background-color: #4CAF50; color: white; 
 }
@@ -74,19 +71,28 @@ body, html {
 
 .cliente:hover {
     background-color: #2f4b30; color: white; 
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra mais intensa ao passar o mouse */
+    transform: translateY(-2px); /* Efeito de "levitação" ao passar o mouse */
 }
 .restaurante:hover {
     background-color: #1b4466; color: white; 
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
+    transform: translateY(-2px); 
 }
 .entregador:hover { 
     background-color: #684512; color: white; 
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
+    transform: translateY(-2px); 
 }
 
 .login-form {
+    padding: 15px 25px;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
+    display: flex;
+    gap: 10px; 
 }
 
 .login-form input {
@@ -97,12 +103,34 @@ body, html {
     border-radius: 5px;
 }
 
-.form-button {
-    width: 90%;
-    padding: 10px;
-    margin: 5px 0;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
+.form-buttonC {
+    padding: 20px 30px;
     cursor: pointer;
+    color: white; 
+    border: none;
+    border-radius: 5px; 
+    font-size: 16px;
+    position: absolute;
+    top: 70%; 
+    right: 25%;
+}
+.form-buttonC:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
+    transform: translateY(-2px); 
+}
+
+.form-buttonE {
+    padding: 20px 40px;
+    cursor: pointer;
+    color: white; 
+    border: none;
+    border-radius: 5px; 
+    font-size: 16px;
+    position: absolute;
+    top: 70%; 
+    left: 25%;
+}
+.form-buttonE:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
+    transform: translateY(-2px); 
 }

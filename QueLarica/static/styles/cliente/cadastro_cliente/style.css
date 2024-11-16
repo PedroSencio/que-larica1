@@ -1,0 +1,107 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body, html {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('/static/img/home/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.container {
+    width: 700px;
+    height: 700px;
+    padding: 20px;
+    background-color: rgba(76, 175, 80, 0.2); 
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.5s ease;
+    position: relative;
+}
+
+.return-button {
+    background-image: url('/static/img/home/return.png'); 
+    background-size: 30%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent;
+    border: none;
+    color: transparent; 
+    width: 120px; 
+    height: 40px; 
+    cursor: pointer;
+    transition: opacity 0.5s ease;
+    opacity: 1; 
+    position: absolute;
+    top: 35px; 
+    left: 10px; 
+}
+
+.logo img {
+    max-width: 200px;
+}
+
+h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#cadastroClienteForm {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    gap: 20px;
+}
+
+#cadastroClienteForm .form-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+#cadastroClienteForm label {
+    font-size: 16px;
+    color: #555;
+    width: 30%; 
+    text-align: right; 
+    font-weight: bold;
+}
+
+#cadastroClienteForm input, 
+#cadastroClienteForm select {
+    width: 100%; 
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#cadastroClienteForm button {
+    padding: 10px 15px;
+    background-color: #4CAF50; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px; 
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 40%; 
+    margin: 0; 
+    align-self: flex-end; 
+}
+
+#cadastroClienteForm button:hover {
+    background-color: #2f4b30;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}

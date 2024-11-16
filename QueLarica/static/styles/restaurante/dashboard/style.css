@@ -1,0 +1,159 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+/* Container principal */
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Barra lateral */
+.sidebar {
+    width: 250px;
+    background-color: rgb(23, 93, 151);
+    color: white;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar-header {
+    padding: 20px;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-nav li {
+    padding: 15px;
+    border-bottom: 1px solid rgb(20, 106, 177);
+}
+
+.sidebar-nav a {
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    display: block;
+}
+
+.sidebar-nav a:hover {
+    background-color:  rgb(20, 106, 177);
+}
+
+/* Conteúdo principal */
+.main-content {
+    flex: 1;
+    background-color: #f4f4f4;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.main-content h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+#itens_menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+#itens_menu li {
+    background: white;
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#itens_menu li strong {
+    font-size: 1.2rem;
+}
+
+#itens_menu li p {
+    color: #555;
+}
+
+.produto-item {
+    position: relative;  /* Define o item da lista como contêiner para a imagem */
+    padding: 20px;       /* Adiciona um espaçamento ao redor do item */
+    margin-bottom: 20px; /* Espaçamento entre os itens */
+    border: 1px solid #ccc; /* Apenas um exemplo de estilo */
+    background-color: #f9f9f9;
+}
+
+.produto-imagem {
+    max-width: 75px;  /* Define o tamanho máximo da largura */
+    height: auto;      /* Mantém a proporção da altura em relação à largura */
+    display: block;    /* Garante que a imagem seja exibida como bloco */
+    position: absolute;  /* Permite o controle do posicionamento */
+    right: 30px;         /* Move a imagem 20px da borda direita */
+    top: 15px; 
+}
+
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+
+}
+
+.form-group label {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-group input,
+.form-group textarea {
+    margin: 20px;
+    width: 80%;
+    padding: 8px;
+    font-size: 14px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* Evita o "overflow" */
+}
+
+.button {
+    width: 10%;
+    padding: 10px;
+    margin: 15px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+    background-color: #2196F3; 
+    color:#ccc 
+}
+
+.button:hover {
+    background-color: #1b4466; color: white; 
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
+    transform: translateY(-2px); 
+}
+
+.btn-excluir {
+    background-color: #e74c3c;  /* Vermelho */
+    color: #fff;               /* Texto branco */
+    border: none;              /* Sem borda */
+    padding: 5px 10px;         /* Espaçamento interno */
+    border-radius: 5px;        /* Cantos arredondados */
+    cursor: pointer;           /* Cursor de mão */
+    transition: background-color 0.3s ease;
+}
+
+.btn-excluir:hover {
+    background-color: #c0392b; /* Vermelho mais escuro no hover */
+}
+
