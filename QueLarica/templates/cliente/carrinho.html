@@ -1,0 +1,66 @@
+{% extends "cliente/dashboard.html" %}
+
+{% block content %}
+    <div class="carrinho-container">
+        <div class="carrinho-header">
+            <h2>Seu Carrinho</h2>
+        </div>
+
+        {% if itens %}
+            <!-- Tabela com itens do carrinho -->
+            <table class="carrinho-itens-table">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                        <th>Subtotal</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in itens %}
+                    <tr>
+                        <td>
+                            <div class="produto-info">
+                                <img src="{{ url_for('static', filename='uploads/' + item.produto.imagem) }}" alt="{{ item.produto.nome }}" class="produto-imagem">
+                                <span>{{ item.produto.nome }}</span>
+                            </div>
+                        </td>
+                        <td>{{ item.quantidade }}</td>
+                        <td>R$ {{ "%.2f"|format(item.subtotal) }}</td>
+                        <td>
+                            <div class="acoes-botoes">
+                                <!-- Adicionar outro item -->
+                                <form method="POST" action="{{ url_for('adicionar_ao_carrinho') }}">
+                                    <input type="hidden" name="produto_id" value="{{ item.produto.id }}">
+                                    <button type="submit" class="btn-adicionar">+</button>
+                                </form>
+
+                                <!-- Remover o item -->
+                                <form method="POST" action="{{ url_for('remover_do_carrinho') }}">
+                                    <input type="hidden" name="produto_id" value="{{ item.produto.id }}">
+                                    <button type="submit" class="btn-remover">-</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="carrinho-total">
+                <p>Total: R$ {{ "%.2f"|format(carrinho.total) }}</p>
+            </div>
+
+            <div class="carrinho-actions">
+                <a href="#" class="btn-finalizar-compra">Finalizar Compra</a>
+            </div>
+
+        {% else %}
+            <!-- Mensagem de carrinho vazio -->
+            <div class="carrinho-vazio">
+                <p>Seu carrinho está vazio. Adicione itens para continuar.</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'restaurante/dashboard.html' %}
+
+{% block content %}
+<h1>Configurações</h1>
+
+<section id="configuracoes">
+    <p>Status atual: <strong id="status-text">{{ 'Online' if restaurante.status else 'Offline' }}</strong></p>
+    <label class="toggle">
+        <input type="checkbox" id="status-toggle" {% if restaurante.status %}checked{% endif %}>
+        <span class="slider"></span>
+    </label>
+
+    <!-- Formulário para enviar foto -->
+    <form action="{{ url_for('upload_foto_restaurante', restaurante_id=restaurante.id) }}" method="POST" enctype="multipart/form-data"><br>
+        <label class="foto-titulo" for="foto">Foto de Perfil:</label><br>
+        <input class="foto-upload" type="file" name="foto" id="foto" accept="image/*" required><br>
+        <button type="submit" class="btn-upload">Enviar Foto</button><br>
+    </form>
+</section>
+
+<style>
+    #configuracoes {
+        text-align: left;
+        margin-top: 20px;
+    }
+
+    .toggle {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    .toggle input {
+        display: none;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 34px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .slider {
+        background-color: #007bff;
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+
+    .foto-titulo {
+        margin-top: 20px;
+    }
+
+    .foto-upload {
+        margin-top: 20px;
+    }
+    /* Estilo para o botão de upload */
+    .btn-upload {
+        margin-top: 20px;
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .btn-upload:hover {
+        background-color: #218838;
+    }
+</style>
+
+<script src="{{ url_for('static', filename='script/restaurante/botao_online.js') }}"></script>
+{% endblock %}

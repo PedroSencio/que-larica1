@@ -1,0 +1,366 @@
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Container principal */
+    .dashboard-container {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* Barra lateral */
+    .sidebar {
+        width: 250px;
+        background-color: #2b662d;
+        color: white;
+        padding-top: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .sidebar-header {
+        padding: 20px;
+        text-align: center;
+        font-size: 1.5rem;
+    }
+
+    .sidebar-nav ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar-nav li {
+        padding: 15px;
+        border-bottom: 1px solid #337735;
+    }
+
+    .sidebar-nav a {
+        text-decoration: none;
+        color: rgb(255, 255, 255);
+        display: block;
+    }
+
+    .sidebar-nav a:hover {
+        background-color:  #337735;
+    }
+
+    /* Conteúdo principal */
+    .main-content {
+        flex: 1;
+        background-color: #f4f4f4;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .main-content h1 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
+    #itens_menu ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    #itens_menu li {
+        background: white;
+        margin: 1rem 0;
+        padding: 1rem;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #itens_menu li strong {
+        font-size: 1.2rem;
+    }
+
+    #itens_menu li p {
+        color: #555;
+    }
+
+    .produto-item {
+        position: relative;  /* Mantém o item da lista como contêiner para a imagem */
+        padding: 20px;       /* Adiciona espaçamento ao redor do item */
+        margin-bottom: 20px; /* Espaçamento entre os itens */
+        border: 1px solid #ccc; /* Borda para separar os itens */
+        background-color: #f9f9f9;
+        display: flex; /* Usamos flexbox para alinhar os itens */
+        align-items: center; /* Alinha verticalmente os itens */
+        justify-content: space-between; /* Distribui os itens (nome, descrição, imagem) */
+        flex-wrap: wrap; /* Permite que os itens se movam para a linha seguinte */
+    }
+    
+    .produto-imagem {
+        max-width: 75px; /* Largura máxima da imagem */
+        height: auto;    /* Mantém a proporção da imagem */
+        display: block;  /* Garante que a imagem seja exibida como bloco */
+        margin-left: 20px; /* Adiciona espaçamento à esquerda da imagem */
+    }
+    
+    .produto-info {
+        flex-grow: 1; /* Faz com que o conteúdo do produto ocupe o espaço disponível */
+        margin-bottom: 10px; /* Adiciona espaçamento abaixo da descrição */
+    }
+    
+    .produto-info h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+    
+    .produto-info p {
+        margin: 5px 0;
+    }
+    
+    .formulario-btn {
+        width: 100%; /* Garante que o botão ocupe a largura total do contêiner */
+        text-align: center; /* Centraliza o botão */
+    }
+    
+    .btn-adicionar {
+        padding: 10px 20px; /* Espaçamento interno do botão */
+        background-color: #28a745; /* Cor do fundo */
+        color: white; /* Cor do texto */
+        border: none; /* Remove a borda padrão */
+        border-radius: 5px; /* Cantos arredondados */
+        cursor: pointer; /* Muda o cursor para indicar que é clicável */
+        transition: background-color 0.3s; /* Transição suave para a cor de fundo */
+    }
+    
+    .btn-adicionar:hover {
+        background-color: #218838; /* Cor de fundo ao passar o mouse */
+    }
+
+    .restaurantes-container {
+        margin: 0 auto;
+        max-width: 800px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .restaurantes-lista {
+        list-style: none;
+        padding: 0;
+    }
+
+    .restaurante-item {
+        display: flex; /* Flexbox para alinhar a imagem à esquerda e o texto à direita */
+        align-items: center; /* Alinha verticalmente os itens */
+        border-bottom: 1px solid #ddd;
+        padding: 15px 0;
+    }
+
+    .restaurante-item img {
+        width: 80px; /* Tamanho fixo para a imagem */
+        height: 80px; /* Mantém a imagem quadrada */
+        object-fit: cover; /* A imagem preencherá o espaço mantendo a proporção */
+        margin-right: 20px; /* Espaço entre a imagem e o texto */
+    }
+
+    .restaurante-info {
+        display: flex;
+        flex-direction: column; /* Coloca o nome e endereço um embaixo do outro */
+    }
+    
+
+    .restaurante-item h2 {
+        margin: 0;
+        color: #2c3e50;
+    }
+
+    .restaurante-item p {
+        margin: 5px 0;
+        color: #7f8c8d;
+    }
+
+    .ver-cardapio-btn {
+        margin-left: auto;
+        display: inline-block;
+        margin-top: 10px;
+        padding: 10px 15px;
+        background-color: #16a085;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .ver-cardapio-btn:hover {
+        background-color: #1abc9c;
+    }
+
+    .btn-adicionar {
+        background-color: #16a085; /* Cor de fundo verde */
+        color: white; /* Cor do texto */
+        padding: 10px 20px; /* Espaçamento interno do botão */
+        border: none; /* Remove a borda padrão */
+        border-radius: 5px; /* Borda arredondada */
+        font-size: 16px; /* Tamanho da fonte */
+        cursor: pointer; /* Cursor de ponteiro quando passar por cima */
+        transition: background-color 0.3s ease, transform 0.2s ease; /* Transições suaves */
+    }
+    
+    .btn-adicionar:hover {
+        background-color: #1abc9c; /* Cor de fundo mais escura ao passar o mouse */
+        transform: scale(1.05); /* Aumenta um pouco o botão */
+    }
+    
+    .btn-adicionar:active {
+        background-color: #1abc9c; /* Cor ainda mais escura ao clicar */
+        transform: scale(0.98); /* Efeito de clique */
+    }
+    
+    .btn-adicionar:focus {
+        outline: none; /* Remove a borda ao focar */
+    }
+
+/* Carrinho de Compras */
+.carrinho-container {
+    margin: 20px auto;
+    max-width: 900px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.carrinho-header {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #2c3e50;
+}
+
+.carrinho-vazio {
+    font-size: 1.2rem;
+    color: #e74c3c;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.carrinho-vazio p {
+    font-weight: bold;
+}
+
+
+.carrinho-itens-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.carrinho-itens-table th, .carrinho-itens-table td {
+    padding: 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.carrinho-itens-table th {
+    background-color: #2b662d;
+    color: white;
+}
+
+.carrinho-itens-table td {
+    background-color: #f9f9f9;
+}
+
+.carrinho-itens-table .produto-imagem {
+    max-width: 75px;
+    height: auto;
+    margin-right: 15px; /* Espaçamento entre imagem e nome */
+}
+
+.carrinho-itens-table .produto-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.carrinho-itens-table .produto-info span {
+    margin-right: 10px;
+}
+
+.carrinho-itens-table .btn-adicionar,
+.carrinho-itens-table .btn-remover {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: inline-block;
+    margin-right: 5px; /* Espaçamento entre os botões */
+}
+
+.carrinho-itens-table .acoes-botoes {
+    display: flex;
+    align-items: center; /* Alinha verticalmente os botões */
+    justify-content: flex-start; /* Alinha os botões à esquerda */
+}
+
+.carrinho-itens-table .btn-adicionar {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px; /* Espaçamento entre os botões */
+}
+
+.carrinho-itens-table .btn-remover {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px; /* Espaçamento entre os botões */
+}
+
+.carrinho-itens-table .btn-adicionar {
+    background-color: #28a745; /* Cor verde */
+    color: white;
+}
+
+.carrinho-itens-table .btn-adicionar:hover {
+    background-color: #218838;
+}
+
+.carrinho-itens-table .btn-remover {
+    background-color: #e74c3c; /* Cor vermelha */
+    color: white;
+}
+
+.carrinho-itens-table .btn-remover:hover {
+    background-color: #c0392b; /* Cor vermelha mais escura */
+}
+
+.carrinho-total {
+    font-size: 1.5rem;
+    text-align: right;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.carrinho-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.carrinho-actions .btn-finalizar-compra {
+    background-color: #16a085;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.carrinho-actions .btn-finalizar-compra:hover {
+    background-color: #1abc9c;
+}

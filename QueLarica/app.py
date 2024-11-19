@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
+from functools import wraps
 import os
 import secrets
 
@@ -40,8 +41,9 @@ class Restaurante(db.Model):
     senha = db.Column(db.String(50), nullable=False)
     cnpj = db.Column(db.String(20), nullable=False, unique=True)
     endereco = db.Column(db.String(50), nullable=False)
-    status = db.Column(db.Boolean, default=True) 
+    status = db.Column(db.Boolean, default=False) 
     produtos = db.relationship('Produto', back_populates='restaurante', lazy=True)
+    fotoperfil = db.Column(db.String(200), nullable=True)
 
 class Cliente(db.Model):
     __tablename__ = 'clientes'
@@ -68,18 +70,55 @@ class Produto(db.Model):
     descricao = db.Column(db.String(255), nullable=False)
     preco = db.Column(db.Float, nullable=False)
     imagem = db.Column(db.String(255), nullable=True)
-    restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'), nullable=False)
+    restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id', name='fk_produto_restaurante'), nullable=False)
     restaurante = db.relationship('Restaurante', back_populates='produtos')
+
+
+class Carrinho(db.Model):
+    __tablename__ = 'carrinhos'
+    id = db.Column(db.Integer, primary_key=True)
+    cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id', name='fk_carrinho_cliente'), nullable=False)
+    cliente = db.relationship('Cliente', backref='carrinhos')
+    total = db.Column(db.Float, default=0.0)
+
+
+class ItemCarrinho(db.Model):
+    __tablename__ = 'itens_carrinho'
+    id = db.Column(db.Integer, primary_key=True)
+    carrinho_id = db.Column(db.Integer, db.ForeignKey('carrinhos.id', name='fk_item_carrinho_carrinho'), nullable=False)
+    carrinho = db.relationship('Carrinho', backref='itens')
+    produto_id = db.Column(db.Integer, db.ForeignKey('produtos.id', name='fk_item_carrinho_produto'), nullable=False)
+    produto = db.relationship('Produto', backref='itens_carrinho')
+    quantidade = db.Column(db.Integer, nullable=False, default=1)
+    subtotal = db.Column(db.Float, nullable=False)
+
 
 
 
 # Comando para criar as tabelas no banco de dados
-# with app.app_context():
-#    db.create_all()
+with app.app_context():
+    db.create_all()
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('home'))  # Redireciona para a tela de login
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
+    if 'user_id' in session:
+        user_type = session.get('user_type')
+        if user_type == 'cliente':
+            return redirect(url_for('dashboard_cliente'))
+        elif user_type == 'restaurante':
+            return redirect(url_for('dashboard_restaurante'))
+        elif user_type == 'entregador':
+            return redirect(url_for('dashboard_entregador'))
+        
     if request.method == 'POST':
         data = request.json  # Recebe os dados do JavaScript (JSON)
         email = data.get('email')
@@ -109,6 +148,11 @@ def home():
             return {"success": False, "message": "Email ou senha incorretos."}, 401
     
     return render_template("home/home.html")
+
+@app.route('/logout')
+def logout():
+    session.clear()  
+    return redirect(url_for('home'))
 
 @app.route('/cadastro_cliente', methods=['GET', 'POST'])
 def cadastro_cliente():
@@ -210,6 +254,7 @@ def sucesso():
     return "Cadastro realizado com sucesso!"
 
 @app.route('/dashboard_cliente')
+@login_required
 def dashboard_cliente():
     # Verifica se o usuário está logado e é do tipo correto
     if 'user_id' not in session or session['user_type'] != 'cliente':
@@ -217,14 +262,155 @@ def dashboard_cliente():
 
     # Busca o cliente no banco de dados
     cliente = Cliente.query.get(session['user_id'])
+    restaurantes = Restaurante.query.filter_by(status=True).all() 
 
     if not cliente:
         return redirect(url_for('home'))
 
     # Renderiza o dashboard com os dados do cliente
-    return render_template('cliente/dashboard.html', cliente=cliente)
+    return render_template('cliente/dashboard.html', cliente=cliente, restaurantes=restaurantes)
+
+@app.route('/<int:restaurante_id>/cardapio')
+@login_required
+def cardapio(restaurante_id):
+    cliente = Cliente.query.get(session['user_id'])
+    restaurante = Restaurante.query.get_or_404(restaurante_id)
+    produtos = Produto.query.filter_by(restaurante_id=restaurante_id).all()
+    
+    if not restaurante.status:
+        return "Restaurante não encontrado"
+    
+    return render_template('cliente/cardapio.html', cliente=cliente, restaurante=restaurante, produtos=produtos)
+
+@app.route('/carrinho', methods=['GET'])
+@login_required
+def carrinho():
+    if session['user_type'] != 'cliente':
+        return redirect('/')
+
+    cliente_id = session['user_id']
+    cliente = Cliente.query.get(cliente_id)
+    carrinho = Carrinho.query.filter_by(cliente_id=cliente_id).first()
+
+    if not carrinho:
+        carrinho = Carrinho(cliente_id=cliente_id, total=0.0)
+        db.session.add(carrinho)
+        db.session.commit()
+
+    itens = ItemCarrinho.query.filter_by(carrinho_id=carrinho.id).all()
+
+    return render_template('cliente/carrinho.html', cliente=cliente, carrinho=carrinho, itens=itens)
+
+@app.route('/adicionar_ao_carrinho', methods=['POST'])
+@login_required
+def adicionar_ao_carrinho():
+    if session['user_type'] != 'cliente':
+        return redirect('/')
+
+    produto_id = request.form.get('produto_id')  # Obtém o ID do produto do formulário
+    cliente_id = session['user_id']
+
+    # Lógica para adicionar ao carrinho
+    carrinho = Carrinho.query.filter_by(cliente_id=cliente_id).first()
+    if not carrinho:
+        carrinho = Carrinho(cliente_id=cliente_id, total=0.0)
+        db.session.add(carrinho)
+        db.session.commit()
+
+    produto = Produto.query.get(produto_id)
+    if not produto:
+        return "Produto não encontrado", 404
+
+    # Verifica se o carrinho já contém itens
+    if carrinho.itens:
+        # Obtém o restaurante do primeiro item no carrinho
+        restaurante_atual = carrinho.itens[0].produto.restaurante_id
+        if restaurante_atual != produto.restaurante_id:
+            # Impede a adição se o restaurante for diferente
+            return "Você só pode adicionar itens do mesmo restaurante ao carrinho.", 400
+
+    # Verifica se o item já está no carrinho
+    item = ItemCarrinho.query.filter_by(carrinho_id=carrinho.id, produto_id=produto_id).first()
+    if item:
+        item.quantidade += 1
+        item.subtotal = item.quantidade * produto.preco
+    else:
+        item = ItemCarrinho(
+            carrinho_id=carrinho.id,
+            produto_id=produto_id,
+            quantidade=1,
+            subtotal=produto.preco
+        )
+        db.session.add(item)
+
+    # Atualiza o total do carrinho
+    carrinho.total += produto.preco
+    db.session.commit()
+
+    return redirect('/carrinho')
+
+
+    
+@app.route('/remover_do_carrinho', methods=['POST'])
+@login_required
+def remover_do_carrinho():
+    if session['user_type'] != 'cliente':
+        return redirect('/')
+
+    cliente_id = session['user_id']
+    produto_id = request.form.get('produto_id')  # Obtém o ID do produto do formulário
+
+    carrinho = Carrinho.query.filter_by(cliente_id=cliente_id).first()
+    if not carrinho:
+        return redirect('/carrinho')
+
+    # Procura o item no carrinho
+    item = ItemCarrinho.query.filter_by(carrinho_id=carrinho.id, produto_id=produto_id).first()
+    if not item:
+        return redirect('/carrinho')
+
+    if item.quantidade > 1:
+        # Reduz a quantidade e atualiza o subtotal
+        item.quantidade -= 1
+        item.subtotal = item.quantidade * item.produto.preco
+        carrinho.total -= item.produto.preco
+    else:
+        # Remove o item completamente se a quantidade for 1
+        carrinho.total -= item.subtotal
+        db.session.delete(item)
+
+    db.session.commit()
+
+    return redirect('/carrinho')  # Redireciona para o carrinho atualizado
+
+
+
+
+    if item:
+        item.quantidade += quantidade
+        item.subtotal += item.produto.preco * quantidade
+    else:
+        produto = Produto.query.get(produto_id)
+        if not produto:
+            return {"success": False, "message": "Produto não encontrado"}, 404
+
+        item = ItemCarrinho(
+            carrinho_id=carrinho.id,
+            produto_id=produto_id,
+            quantidade=quantidade,
+            subtotal=produto.preco * quantidade
+        )
+        db.session.add(item)
+
+    carrinho.total += item.produto.preco * quantidade
+    db.session.commit()
+
+    return {"success": True, "message": "Produto adicionado ao carrinho"}
+
+
 
 @app.route('/dashboard_restaurante')
+@login_required
 def dashboard_restaurante():
     if 'user_id' not in session or session['user_type'] != 'restaurante':
         return redirect(url_for('home'))
@@ -238,6 +424,7 @@ def dashboard_restaurante():
     return render_template('restaurante/dashboard.html', restaurante=restaurante, itens_menu=itens_menu)
 
 @app.route('/cadastro_produto', methods=['GET', 'POST'])
+@login_required
 def cadastro_produto():
     if 'user_id' not in session or session['user_type'] != 'restaurante':
         return redirect(url_for('home'))
@@ -291,6 +478,7 @@ def cadastro_produto():
     return render_template('restaurante/cadastrar_item.html', restaurante=restaurante)
 
 @app.route('/excluir_item/<int:item_id>', methods=['POST'])
+@login_required
 def excluir_item(item_id):
     try:
         item = Produto.query.get(item_id)
@@ -312,8 +500,70 @@ def excluir_item(item_id):
 
     return redirect(url_for('dashboard_restaurante'))
 
+@app.route('/configuracoes', methods=['GET', 'POST'])
+@login_required
+def configuracoes():
+    restaurante = Restaurante.query.get(session['user_id'])
+    
+    if request.method == 'POST':
+        try:
+            # Alternar o status
+            restaurante.status = not restaurante.status
+            db.session.commit()
+            flash(f"Status atualizado para {'Online' if restaurante.status else 'Offline'}", 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Erro ao atualizar status: {str(e)}", 'error')
+
+    return render_template('restaurante/configuracoes.html', restaurante=restaurante)
+
+@app.route('/configuracoes/status', methods=['POST'])
+@login_required
+def atualizar_status():
+    restaurante = Restaurante.query.get(session['user_id'])
+    try:
+        # Alternar o status com base no valor enviado
+        novo_status = request.json.get('status')
+        restaurante.status = novo_status
+        db.session.commit()
+        return {'success': True, 'status': 'Online' if novo_status else 'Offline'}, 200
+    except Exception as e:
+        db.session.rollback()
+        return {'success': False, 'error': str(e)}, 500
+
+@app.route('/configuracoes/upload_foto_restaurante/<int:restaurante_id>', methods=['POST'])
+@login_required
+def upload_foto_restaurante(restaurante_id):
+    restaurante = Restaurante.query.get_or_404(restaurante_id)
+    
+    # Verifica se a imagem foi enviada
+    if 'foto' not in request.files:
+        return "Nenhum arquivo enviado", 400
+    
+    file = request.files['foto']
+    
+    # Verifica se o arquivo foi selecionado
+    if file.filename == '':
+        return "Nenhum arquivo selecionado", 400
+    
+    # Se o arquivo for válido
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+
+        # Atualiza a foto do restaurante no banco de dados
+        restaurante.fotoperfil = filename
+        db.session.commit()
+
+        # Redireciona para a página de configurações ou dashboard
+        return redirect(url_for('configuracoes', restaurante_id=restaurante.id))
+
+    return "Tipo de arquivo não permitido", 400
+
 
 @app.route('/dashboard_entregador')
+@login_required
 def dashboard_entregador():
     
     if 'user_id' not in session or session['user_type'] != 'entregador':

@@ -1,0 +1,33 @@
+{% extends "cliente/dashboard.html" %}
+
+{% block content %}
+    <h1>Cardápio de {{ restaurante.nome }}</h1>
+
+    <section id="itens_menu">
+        {% if produtos %}
+            <ul>
+                {% for produto in produtos %}
+                <li class="produto-item">
+                    <div class="produto-info">
+                        <strong>{{ produto.nome }}</strong> - R$ {{ "%.2f"|format(produto.preco) }}
+                        <p>{{ produto.descricao }}</p>
+                    </div>
+                    {% if produto.imagem %}
+                        <img src="{{ url_for('static', filename='uploads/' + produto.imagem) }}" alt="{{ produto.nome }}" class="produto-imagem">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='/img/restaurante/sem-imagem.png') }}" alt="{{ produto.nome }}" class="produto-imagem">
+                    {% endif %}
+                    <div class="formulario-btn">
+                        <form method="POST" action="{{ url_for('adicionar_ao_carrinho') }}">
+                            <input type="hidden" name="produto_id" value="{{ produto.id }}">
+                            <button type="submit" class="btn-adicionar">Adicionar ao Carrinho</button>
+                        </form>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Este restaurante ainda não possui produtos no cardápio.</p>
+        {% endif %}
+    </section>
+{% endblock %}
