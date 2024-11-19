@@ -53,7 +53,9 @@
             </div>
 
             <div class="carrinho-actions">
-                <a href="#" class="btn-finalizar-compra">Finalizar Compra</a>
+                <form method="POST" action="{{ url_for('finalizar_pedido') }}">
+                    <button type="submit" class="btn-finalizar-compra">Finalizar Compra</button>
+                </form>
             </div>
 
         {% else %}

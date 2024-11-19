@@ -4,8 +4,10 @@ from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 from functools import wraps
+from datetime import datetime
 import os
 import secrets
+
 
 app = Flask(__name__)
 
@@ -91,6 +93,26 @@ class ItemCarrinho(db.Model):
     produto = db.relationship('Produto', backref='itens_carrinho')
     quantidade = db.Column(db.Integer, nullable=False, default=1)
     subtotal = db.Column(db.Float, nullable=False)
+    
+class Pedido(db.Model):
+    __tablename__ = 'pedidos'
+    id = db.Column(db.Integer, primary_key=True)
+    cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
+    restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'), nullable=False)
+    status = db.Column(db.String(20), default="Aguardando Confirmação")  # Status do pedido
+    data_pedido = db.Column(db.DateTime, default=datetime.now)
+    itens = db.relationship('ItemPedido', backref='pedido', lazy=True)
+    cliente = db.relationship('Cliente', backref='pedidos')
+    restaurante = db.relationship('Restaurante', backref='pedidos')
+
+class ItemPedido(db.Model):
+    __tablename__ = 'itens_pedido'
+    id = db.Column(db.Integer, primary_key=True)
+    pedido_id = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
+    produto_id = db.Column(db.Integer, db.ForeignKey('produtos.id'), nullable=False)
+    quantidade = db.Column(db.Integer, nullable=False)
+    subtotal = db.Column(db.Float, nullable=False)
+    produto = db.relationship('Produto', backref='itens_pedido')
 
 
 
@@ -349,8 +371,6 @@ def adicionar_ao_carrinho():
 
     return redirect('/carrinho')
 
-
-    
 @app.route('/remover_do_carrinho', methods=['POST'])
 @login_required
 def remover_do_carrinho():
@@ -383,9 +403,6 @@ def remover_do_carrinho():
 
     return redirect('/carrinho')  # Redireciona para o carrinho atualizado
 
-
-
-
     if item:
         item.quantidade += quantidade
         item.subtotal += item.produto.preco * quantidade
@@ -407,7 +424,80 @@ def remover_do_carrinho():
 
     return {"success": True, "message": "Produto adicionado ao carrinho"}
 
+@app.route('/finalizar_pedido', methods=['POST'])
+@login_required
+def finalizar_pedido():
+    if session['user_type'] != 'cliente':
+        return redirect('/')
 
+    cliente_id = session['user_id']
+    carrinho = Carrinho.query.filter_by(cliente_id=cliente_id).first()
+    if not carrinho or not carrinho.itens:
+        return redirect('/carrinho')  # Se o carrinho estiver vazio, redireciona de volta
+
+    # Criar o pedido
+    restaurante_id = carrinho.itens[0].produto.restaurante_id  # Assumindo que todos os itens são do mesmo restaurante
+    pedido = Pedido(cliente_id=cliente_id, restaurante_id=restaurante_id)
+    db.session.add(pedido)
+    db.session.commit()
+
+    # Criar os itens do pedido
+    for item in carrinho.itens:
+        item_pedido = ItemPedido(
+            pedido_id=pedido.id,
+            produto_id=item.produto_id,
+            quantidade=item.quantidade,
+            subtotal=item.subtotal
+        )
+        db.session.add(item_pedido)
+
+    # Remover os itens do carrinho antes de excluir o carrinho
+    for item in carrinho.itens:
+        db.session.delete(item)
+        
+
+    # Excluir o carrinho
+    db.session.delete(carrinho)
+    db.session.commit()
+
+    return redirect(url_for('meus_pedidos'))  # Redireciona para a página de pedidos do cliente
+
+@app.route('/meus_pedidos')
+@login_required
+def meus_pedidos():
+    if session['user_type'] != 'cliente':
+        return redirect('/')
+
+    cliente_id = session['user_id']
+
+    # Obter os dados do cliente
+    cliente = Cliente.query.get(cliente_id)
+    if not cliente:
+        return redirect('/')  # Redirecionar se o cliente não for encontrado
+
+    # Obter os pedidos do cliente
+    pedidos = Pedido.query.filter_by(cliente_id=cliente_id).all()
+
+    pedidos_invertidos = pedidos[::-1] 
+    # Adicionar detalhes aos pedidos
+    pedidos_detalhados = []
+    for pedido in pedidos_invertidos:
+        # Obter os itens do pedido
+        itens = ItemPedido.query.filter_by(pedido_id=pedido.id).all()
+        total_pedido = sum(item.subtotal for item in itens)
+
+        # Formatar a data do pedido
+        pedido.data_pedido_formatada = pedido.data_pedido.strftime('%d/%m/%Y, %H:%M')
+        print(pedido.data_pedido_formatada)
+
+        # Adicionar as informações detalhadas do pedido
+        pedidos_detalhados.append({
+            'pedido': pedido,
+            'itens': itens,
+            'total': total_pedido
+        })
+
+    return render_template('cliente/pedidos.html', cliente=cliente, pedidos=pedidos_detalhados)
 
 @app.route('/dashboard_restaurante')
 @login_required
@@ -499,6 +589,64 @@ def excluir_item(item_id):
         flash(f"Erro ao excluir item: {str(e)}", "error")
 
     return redirect(url_for('dashboard_restaurante'))
+
+@app.route('/pedidos_restaurante')
+@login_required
+def pedidos_restaurante():
+    if session['user_type'] != 'restaurante':
+        return redirect('/')
+
+    restaurante_id = session['user_id']
+
+    # Obter todos os pedidos relacionados ao restaurante
+    pedidos = Pedido.query.filter_by(restaurante_id=restaurante_id).all()
+    restaurante = Restaurante.query.get(session['user_id'])
+    
+    pedidos_invertidos = pedidos[::-1] 
+
+    # Adicionar detalhes ao template
+    pedidos_detalhados = []
+    for pedido in pedidos_invertidos:
+        cliente = Cliente.query.get(pedido.cliente_id)
+        itens = ItemPedido.query.filter_by(pedido_id=pedido.id).all()
+        total_pedido = sum(item.subtotal for item in itens)
+
+        pedidos_detalhados.append({
+            'pedido': pedido,
+            'cliente': cliente,
+            'itens': itens,
+            'total': total_pedido
+        })
+
+    return render_template('restaurante/pedidos.html', restaurante=restaurante, pedidos=pedidos_detalhados)
+
+@app.route('/aceitar_pedido', methods=['POST'])
+@login_required
+def aceitar_pedido():
+    if session['user_type'] != 'restaurante':
+        return redirect('/')
+
+    pedido_id = request.form.get('pedido_id')  
+    pedido = Pedido.query.get(pedido_id)
+    if pedido:
+        pedido.status = "Confirmado"
+        db.session.commit()
+
+    return redirect(url_for('pedidos_restaurante'))
+
+@app.route('/recusar_pedido', methods=['POST'])
+@login_required
+def recusar_pedido():
+    if session['user_type'] != 'restaurante':
+        return redirect('/')
+
+    pedido_id = request.form.get('pedido_id')  # Obter o pedido_id do formulário
+    pedido = Pedido.query.get(pedido_id)
+    if pedido:
+        pedido.status = "Recusado"
+        db.session.commit()
+
+    return redirect(url_for('pedidos_restaurante'))
 
 @app.route('/configuracoes', methods=['GET', 'POST'])
 @login_required

@@ -157,3 +157,64 @@ body, html {
     background-color: #c0392b; /* Vermelho mais escuro no hover */
 }
 
+/* Estilo específico para os pedidos recebidos */
+.pedidos-container {
+    padding: 20px;
+}
+
+.pedidos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espaço entre os pedidos */
+}
+
+.pedido-item {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pedido-item h3 {
+    font-size: 1.5rem;
+    color: rgb(23, 93, 151);
+}
+
+.pedido-item p {
+    font-size: 1rem;
+    color: #555;
+}
+
+.pedido-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px; /* Espaçamento entre os botões */
+}
+
+.pedido-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    flex: 1; /* Faz com que os botões tenham o mesmo tamanho */
+}
+
+.pedido-actions .pedido-aceitar {
+    background-color: #4CAF50; /* Verde para confirmar */
+    color: white;
+}
+
+.pedido-actions .pedido-aceitar:hover {
+    background-color: #388E3C;
+}
+
+.pedido-actions .pedido-recusar {
+    background-color: #F44336; /* Vermelho para recusar */
+    color: white;
+}
+
+.pedido-actions .pedido-recusar:hover {
+    background-color: #D32F2F;
+}

@@ -364,3 +364,89 @@
 .carrinho-actions .btn-finalizar-compra:hover {
     background-color: #1abc9c;
 }
+
+/* Estilos para a página Meus Pedidos */
+.meus-pedidos-container {
+    margin: 20px auto;
+    max-width: 900px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.meus-pedidos-container h1 {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.tabela-pedidos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.tabela-pedidos th, .tabela-pedidos td {
+    padding: 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.tabela-pedidos th {
+    background-color: #2b662d;
+    color: white;
+}
+
+.tabela-pedidos td {
+    background-color: #f9f9f9;
+}
+
+.tabela-pedidos tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.tabela-pedidos tr:hover {
+    background-color: #f1f1f1;
+}
+
+.tabela-pedidos td ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.tabela-pedidos td ul li {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.tabela-pedidos td ul li span {
+    font-weight: bold;
+}
+
+.pedido-status {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.pedido-total {
+    font-weight: bold;
+    color: #28a745;
+}
+
+.pedido-itens {
+    font-size: 0.9em;
+    color: #7f8c8d;
+}
+
+.sem-pedidos {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #e74c3c;
+}
+
+.sem-pedidos p {
+    font-weight: bold;
+}
