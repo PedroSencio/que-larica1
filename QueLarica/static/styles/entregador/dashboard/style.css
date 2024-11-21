@@ -69,49 +69,79 @@ body, html {
 }
 
 /* Listagem de pedidos */
+/* Contêiner principal */
+.entregador-pedidos-container {
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 20px;
+    background: rgba(255, 152, 0, 0.2);
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.entregador-pedidos-container h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+/* Lista de pedidos */
 .pedidos-lista {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+    padding: 10px 0;
 }
 
+/* Card de cada pedido */
 .pedido-item {
-    background: white;
+    background: linear-gradient(145deg, #ffffff, #e6e9ef);
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.pedido-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Títulos */
 .pedido-item h3 {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
+    font-size: 1.6rem;
+    color: #34495e;
+    margin-bottom: 15px;
 }
 
+/* Informações do pedido */
 .pedido-item p {
-    margin: 5px 0;
-    color: #555;
+    margin: 8px 0;
+    font-size: 1rem;
+    color: #000000;
 }
 
-.pedido-item .pedido-aceitar, 
-.pedido-item .pedido-finalizar {
-    background-color: #28a745;
+/* Botões */
+.pedido-item .pedido-aceitar {
+    background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 12px 20px;
     font-size: 1rem;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.pedido-item .pedido-aceitar:hover, 
-.pedido-item .pedido-finalizar:hover {
-    background-color: #218838;
+.pedido-item .pedido-aceitar:hover {
+    background-color: #388E3C;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
-
-.pedido-item form {
-    margin-top: 10px;
-}
-
 /* Concluir entrega */
 .entrega-concluir-container {
     background: rgba(255, 152, 0, 0.2); 
