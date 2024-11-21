@@ -1,3 +1,4 @@
+/* Dashboard Restaurante */
 body, html {
     margin: 0;
     padding: 0;
@@ -159,39 +160,53 @@ body, html {
 
 /* Estilo específico para os pedidos recebidos */
 .pedidos-container {
+    background: rgba(33, 150, 243, 0.2);
     padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.pedidos-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 15px; /* Espaço entre os pedidos */
+.pedidos-container h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: #333;
 }
 
-.pedido-item {
-    background-color: white;
-    padding: 20px;
+.pedidos-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pedidos-container ul li {
+    background: rgba(33, 150, 243);
+    font-weight: bold;
+    padding: 10px;
+    margin: 5px 0;
     border-radius: 5px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    font-size: 0.9rem;
 }
 
-.pedido-item h3 {
-    font-size: 1.5rem;
-    color: rgb(23, 93, 151);
-}
-
-.pedido-item p {
-    font-size: 1rem;
+.pedidos-container p {
+    margin: 10px 0;
     color: #555;
 }
 
-.pedido-actions {
+.pedidos-container hr {
+    border: none;
+    height: 1px;
+    background: rgba(33, 150, 243);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.pedidos-container .pedido-actions {
     margin-top: 15px;
     display: flex;
     gap: 10px; /* Espaçamento entre os botões */
 }
 
-.pedido-actions button {
+.pedidos-container .pedido-actions button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -199,22 +214,49 @@ body, html {
     cursor: pointer;
     transition: background-color 0.3s;
     flex: 1; /* Faz com que os botões tenham o mesmo tamanho */
+    font-weight: bold;
 }
 
-.pedido-actions .pedido-aceitar {
+.pedidos-container .pedido-actions .pedido-aceitar {
     background-color: #4CAF50; /* Verde para confirmar */
     color: white;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 }
 
-.pedido-actions .pedido-aceitar:hover {
+.pedidos-container .pedido-actions .pedido-aceitar:hover {
     background-color: #388E3C;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 }
 
-.pedido-actions .pedido-recusar {
+.pedidos-container .pedido-actions .pedido-recusar {
     background-color: #F44336; /* Vermelho para recusar */
     color: white;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 }
 
-.pedido-actions .pedido-recusar:hover {
+.pedidos-container .pedido-actions .pedido-recusar:hover {
     background-color: #D32F2F;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+}
+
+.pedidos-container .entrega-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    flex: 1; /* Faz com que os botões tenham o mesmo tamanho */
+    font-weight: bold;
+}
+
+.pedidos-container .entrega-actions .enviar-entrega {
+    background-color: #FF9800;
+    color: rgb(255, 255, 255);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+}
+
+.pedidos-container .entrega-actions .enviar-entrega:hover {
+    background-color: #a56e1c;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 }

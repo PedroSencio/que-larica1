@@ -6,11 +6,8 @@ from werkzeug.utils import secure_filename
 from functools import wraps
 from datetime import datetime
 import os
-import secrets
-
 
 app = Flask(__name__)
-
 app.secret_key = 'chave_secreta_25'
 
 # Configuração do banco de dados SQLite
@@ -21,13 +18,11 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'connect_args': {'check_same_thread': False}
 }
 
-
+# Configuração do uploads de imagem
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -35,6 +30,7 @@ def allowed_file(filename):
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+#Criacao das tabelas do banco de dados
 class Restaurante(db.Model):
     __tablename__ = 'restaurantes'
     id = db.Column(db.Integer, primary_key=True)
@@ -75,14 +71,12 @@ class Produto(db.Model):
     restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id', name='fk_produto_restaurante'), nullable=False)
     restaurante = db.relationship('Restaurante', back_populates='produtos')
 
-
 class Carrinho(db.Model):
     __tablename__ = 'carrinhos'
     id = db.Column(db.Integer, primary_key=True)
     cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id', name='fk_carrinho_cliente'), nullable=False)
     cliente = db.relationship('Cliente', backref='carrinhos')
     total = db.Column(db.Float, default=0.0)
-
 
 class ItemCarrinho(db.Model):
     __tablename__ = 'itens_carrinho'
@@ -99,11 +93,13 @@ class Pedido(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
     restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'), nullable=False)
-    status = db.Column(db.String(20), default="Aguardando Confirmação")  # Status do pedido
+    entregador_id = db.Column(db.Integer, db.ForeignKey('entregadores.id'), nullable=True)
+    status = db.Column(db.String(20), default="Aguardando Confirmação")  
     data_pedido = db.Column(db.DateTime, default=datetime.now)
     itens = db.relationship('ItemPedido', backref='pedido', lazy=True)
     cliente = db.relationship('Cliente', backref='pedidos')
     restaurante = db.relationship('Restaurante', backref='pedidos')
+    entregador = db.relationship('Entregador', backref='pedidos')
 
 class ItemPedido(db.Model):
     __tablename__ = 'itens_pedido'
@@ -114,12 +110,9 @@ class ItemPedido(db.Model):
     subtotal = db.Column(db.Float, nullable=False)
     produto = db.relationship('Produto', backref='itens_pedido')
 
-
-
-
 # Comando para criar as tabelas no banco de dados
-with app.app_context():
-    db.create_all()
+#with app.app_context():
+#    db.create_all()
 
 def login_required(f):
     @wraps(f)
@@ -129,9 +122,10 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-
+#Rota principal
 @app.route("/", methods=['GET', 'POST'])
 def home():
+    
     if 'user_id' in session:
         user_type = session.get('user_type')
         if user_type == 'cliente':
@@ -142,11 +136,12 @@ def home():
             return redirect(url_for('dashboard_entregador'))
         
     if request.method == 'POST':
+        
         data = request.json  # Recebe os dados do JavaScript (JSON)
         email = data.get('email')
         password = data.get('password')
         user_type = data.get('userType')  # 'cliente', 'restaurante' ou 'entregador'
-
+        
         user = None
         if user_type == 'cliente':
             user = Cliente.query.filter_by(email=email, senha=password).first()
@@ -173,11 +168,13 @@ def home():
 
 @app.route('/logout')
 def logout():
+
     session.clear()  
     return redirect(url_for('home'))
 
 @app.route('/cadastro_cliente', methods=['GET', 'POST'])
 def cadastro_cliente():
+    
     if request.method == 'POST':
         # Pega os dados do formulário
         nome = request.form['nome']
@@ -204,8 +201,6 @@ def cadastro_cliente():
         except IntegrityError:
             db.session.rollback()  # Reverte a transação se ocorrer erro
             return render_template('cliente/cadastro.html', error_message="Erro ao salvar: CPF ou Email já cadastrados.")
-
-        return redirect(url_for('sucesso')) 
     
     return render_template('cliente/cadastro.html')
 
@@ -488,10 +483,10 @@ def meus_pedidos():
 
         # Formatar a data do pedido
         pedido.data_pedido_formatada = pedido.data_pedido.strftime('%d/%m/%Y, %H:%M')
-        print(pedido.data_pedido_formatada)
 
         # Adicionar as informações detalhadas do pedido
         pedidos_detalhados.append({
+            'id': pedido.id,
             'pedido': pedido,
             'itens': itens,
             'total': total_pedido
@@ -648,6 +643,23 @@ def recusar_pedido():
 
     return redirect(url_for('pedidos_restaurante'))
 
+@app.route('/enviar_para_entrega', methods=['POST'])
+@login_required
+def enviar_para_entrega():
+    if session['user_type'] != 'restaurante':
+        return redirect('/')
+
+    pedido_id = request.form.get('pedido_id')
+    pedido = Pedido.query.get(pedido_id)
+
+    if pedido and pedido.status == 'Confirmado':
+        pedido.status = 'Em Entrega'
+        db.session.commit()
+        flash('Pedido enviado para entrega!', 'success')
+
+    return redirect(url_for('meus_pedidos'))
+
+
 @app.route('/configuracoes', methods=['GET', 'POST'])
 @login_required
 def configuracoes():
@@ -721,9 +733,96 @@ def dashboard_entregador():
 
     if not entregador:
         return redirect(url_for('home'))
+    
+    pedidos = Pedido.query.filter_by(status='Em Entrega').all()
+    
+    pedidos_resultado = []
+    for pedido in pedidos:
+        # Obter os itens do pedido
+        itens = ItemPedido.query.filter_by(pedido_id=pedido.id).all()
+        total_pedido = sum(item.subtotal for item in itens)
 
-    return render_template('entregador/dashboard.html', entregador=entregador)
+        pedidos_resultado.append({
+            'id': pedido.id,
+            'restaurante': {
+                'nome': pedido.restaurante.nome,
+                'endereco': pedido.restaurante.endereco,
+            },
+            'cliente': {
+                'nome': pedido.cliente.nome,
+                'endereco': pedido.cliente.endereco,
+            },
+            'total': total_pedido,
+        })
 
+    return render_template('entregador/dashboard.html', entregador=entregador, pedidos=pedidos_resultado)
+
+@app.route('/entrega')
+@login_required
+def entrega():
+    if session['user_type'] != 'entregador':
+        return redirect('/')
+
+    entregador_id = session['user_id']
+    entregador = Entregador.query.get(session['user_id'])
+
+    pedidos = Pedido.query.filter_by(entregador_id=entregador_id).all()
+    pedidos_invertidos = pedidos[::-1]
+    
+    pedidos_resultado = []
+    for pedido in pedidos_invertidos:
+        itens = ItemPedido.query.filter_by(pedido_id=pedido.id).all()
+        total_pedido = sum(item.subtotal for item in itens)
+
+        pedidos_resultado.append({
+            'id': pedido.id,
+            'status': pedido.status,
+            'restaurante': {
+                'nome': pedido.restaurante.nome,
+                'endereco': pedido.restaurante.endereco,
+            },
+            'cliente': {
+                'nome': pedido.cliente.nome,
+                'endereco': pedido.cliente.endereco,
+            },
+            'itens': itens,  # Passando os itens para o template
+            'total': total_pedido,
+        })
+
+    return render_template('entregador/entrega.html', entregador=entregador, pedidos=pedidos_resultado)
+
+
+@app.route('/aceitar_entrega', methods=['POST'])
+@login_required
+def aceitar_entrega():
+    if session['user_type'] != 'entregador':
+        return redirect('/')
+    
+    pedido_id = request.form.get('pedido_id')
+    pedido = Pedido.query.get(pedido_id)
+
+    if pedido and pedido.status == 'Em Entrega':
+        pedido.status = 'Em Transporte'
+        pedido.entregador_id = session['user_id']
+        db.session.commit()
+        flash('Você aceitou a entrega!', 'success')
+
+    return redirect(url_for('entrega'))
+
+@app.route('/finalizar_entrega', methods=['POST'])
+@login_required
+def finalizar_entrega():
+    if session['user_type'] != 'entregador':
+        return redirect('/')
+
+    pedido_id = request.form.get('pedido_id')
+    pedido = Pedido.query.get(pedido_id)
+
+    if pedido and pedido.status == 'Em Transporte':
+        pedido.status = 'Concluído'
+        db.session.commit()
+
+    return redirect(url_for('dashboard_entregador'))
 
 if __name__ == "__main__":
     app.run(debug=True)

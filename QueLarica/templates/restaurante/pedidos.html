@@ -2,43 +2,49 @@
 
 {% block content %}
 <div class="pedidos-container">
-    <h2>Pedidos Recebidos</h2>
-
     {% if pedidos %}
-        <div class="pedidos-lista">
-            {% for detalhes in pedidos %}
-                <div class="pedido-item">
-                    <h3>Pedido #{{ detalhes.pedido.id }}</h3>
-                    <p><strong>Cliente:</strong> {{ detalhes.cliente.nome }}</p>
-                    <p><strong>Endereço:</strong> {{ detalhes.cliente.endereco }}</p>
-                    <p><strong>Status:</strong> {{ detalhes.pedido.status }}</p>
-                    <p><strong>Total:</strong> R$ {{ "%.2f"|format(detalhes.total) }}</p>
+        {% for detalhes in pedidos %}
+            <h2>Pedido #{{ detalhes.pedido.id }}</h2>
+            <p><strong>Cliente:</strong> {{ detalhes.cliente.nome }}</p>
+            <p><strong>Endereço:</strong> {{ detalhes.cliente.endereco }}</p>
+            <p><strong>Status:</strong> {{ detalhes.pedido.status }}</p>
 
-                    <h4>Itens:</h4>
-                    <ul>
-                        {% for item in detalhes.itens %}
-                            <li>{{ item.quantidade }}x {{ item.produto.nome }} (R$ {{ "%.2f"|format(item.subtotal) }})</li>
-                        {% endfor %}
-                    </ul>
+            <h4>Itens:</h4>
+            <ul>
+                {% for item in detalhes.itens %}
+                    <li>{{ item.quantidade }}x {{ item.produto.nome }} (R$ {{ "%.2f"|format(item.subtotal) }})</li>
+                {% endfor %}
+            </ul>
 
-                    {% if detalhes.pedido.status == 'Aguardando Confirmação' %}
-                    <div class="pedido-actions">
-                        <form method="POST" action="{{ url_for('aceitar_pedido') }}">
-                            <input type="hidden" name="pedido_id" value="{{ detalhes.pedido.id }}">
-                            <button type="submit" class="pedido-aceitar">Confirmar</button>
-                        </form>
-                    
-                        <form method="POST" action="{{ url_for('recusar_pedido') }}">
+            <p><strong>Total:</strong> R$ {{ "%.2f"|format(detalhes.total) }}</p>
+
+            {% if detalhes.pedido.status == 'Aguardando Confirmação' %}
+                <div class="pedido-actions">
+                    <form method="POST" action="{{ url_for('aceitar_pedido') }}">
+                        <input type="hidden" name="pedido_id" value="{{ detalhes.pedido.id }}">
+                        <button type="submit" class="pedido-aceitar">Confirmar</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('recusar_pedido') }}">
                             <input type="hidden" name="pedido_id" value="{{ detalhes.pedido.id }}">
                             <button type="submit" class="pedido-recusar">Recusar</button>
-                        </form>
-                    </div>
-                    {% endif %}
+                    </form>
                 </div>
-            {% endfor %}
-        </div>
+            {% endif %}
+
+            {% if detalhes.pedido.status == 'Confirmado' %}
+                <div class="entrega-actions">
+                    <form method="POST" action="{{ url_for('enviar_para_entrega') }}">
+                        <input type="hidden" name="pedido_id" value="{{ detalhes.pedido.id }}">
+                        <button type="submit" class="enviar-entrega">Enviar Para Entrega</button>
+                    </form>
+                </div>
+            {% endif%}
+            <hr>
+        {% endfor %}
+                
     {% else %}
         <p>Não há pedidos pendentes.</p>
     {% endif %}
+    
 </div>
 {% endblock %}
