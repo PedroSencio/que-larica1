@@ -57,6 +57,7 @@ body, html {
     font-size: 16px;
     cursor: pointer;
     transition: background 0.3s;
+    transition: all 0.2s ease-in-out;
 }
 
 .cliente { 
@@ -71,18 +72,18 @@ body, html {
 
 .cliente:hover {
     background-color: #2f4b30; color: white; 
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra mais intensa ao passar o mouse */
-    transform: translateY(-2px); /* Efeito de "levitação" ao passar o mouse */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
+    transform: scale(1.01);
 }
 .restaurante:hover {
     background-color: #1b4466; color: white; 
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
-    transform: translateY(-2px); 
+    transform: scale(1.01);
 }
 .entregador:hover { 
     background-color: #684512; color: white; 
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
-    transform: translateY(-2px); 
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);  
+    transform: scale(1.01);
 }
 
 .login-form {
@@ -113,10 +114,11 @@ body, html {
     position: absolute;
     top: 70%; 
     right: 25%;
+    transition: all 0.2s ease-in-out;
 }
 .form-buttonC:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
-    transform: translateY(-2px); 
+    transform: scale(1.01);
 }
 
 .form-buttonE {
@@ -129,8 +131,9 @@ body, html {
     position: absolute;
     top: 70%; 
     left: 25%;
+    transition: all 0.2s ease-in-out;
 }
 .form-buttonE:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
-    transform: translateY(-2px); 
+    transform: scale(1.01);
 }

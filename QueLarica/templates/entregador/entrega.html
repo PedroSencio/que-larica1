@@ -1,16 +1,17 @@
 {% extends 'entregador/dashboard.html' %}
 
 {% block content %}
-<div class="entrega-concluir-container">
     {% for pedido in pedidos %}
+    <div class="entrega-concluir-container">
         <h2>Pedido #{{ pedido.id }}</h2>
         <p><strong>Cliente:</strong> {{ pedido.cliente.nome }}</p>
         <p><strong>Endereço do Cliente:</strong> {{ pedido.cliente.endereco }}</p>
-        
+        <p><strong>Status:</strong> {{ pedido.status }}</p>
+    
         <p><strong>Itens:</strong></p>
         <ul>
             {% for item in pedido.itens %}
-                <li>{{ item.quantidade }}x {{ item.produto.nome }} (R$ {{ "%.2f"|format(item.subtotal) }})</li>
+                <li>{{ item.quantidade }}x {{ item.produto.nome }} - R$ {{ "%.2f"|format(item.subtotal) }}</li>
             {% endfor %}
         </ul>
         <p><strong>Total:</strong> R$ {{ "%.2f"|format(pedido.total) }}</p>
@@ -20,10 +21,7 @@
             <input type="hidden" name="pedido_id" value="{{ pedido.id }}">
             <button type="submit" class="pedido-finalizar">Finalizar Entrega</button>
         </form>
-        {% else %}
-            <p><strong>Status:</strong> {{ pedido.status }}</p>
         {% endif %}
-    <hr>
+    </div>
     {% endfor %}
-</div>
 {% endblock %}

@@ -1,9 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+
 /* Dashboard Restaurante */
 body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: Arial, sans-serif;
+    font-family: 'Montserrat', sans-serif;
 }
 
 /* Container principal */
@@ -21,6 +24,7 @@ body, html {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .sidebar-header {
@@ -35,24 +39,31 @@ body, html {
 }
 
 .sidebar-nav li {
-    padding: 15px;
+    padding: 20px;
     border-bottom: 1px solid rgb(20, 106, 177);
 }
 
 .sidebar-nav a {
     text-decoration: none;
-    color: rgb(255, 255, 255);
-    display: block;
+    color: white;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
 }
 
 .sidebar-nav a:hover {
     background-color:  rgb(20, 106, 177);
+    border-radius: 5px;
+    padding-left: 10px;
+    transition: all 0.2s ease;
 }
 
 /* Conteúdo principal */
 .main-content {
     flex: 1;
-    background-color: #f4f4f4;
+    background: url('/static/img/dashboard/backgroud.png') no-repeat center center fixed;
     padding: 20px;
     overflow-y: auto;
 }
@@ -62,87 +73,209 @@ body, html {
     margin-bottom: 20px;
 }
 
-#itens_menu ul {
-    list-style: none;
-    padding: 0;
+/* Contêiner itens restaurante */
+.menu-container {
+    margin: 0 auto;
+    max-width: 1000px;
+    padding: 20px;
+    background-color: rgb(20, 106, 177, 0.2);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-#itens_menu li {
-    background: white;
-    margin: 1rem 0;
-    padding: 1rem;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.menu-container h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #333;
 }
 
-#itens_menu li strong {
+.itens-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* Cartões de produto */
+.produto-card {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.produto-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.produto-conteudo {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.produto-conteudo h2 {
+    font-size: 1.5rem;
+    margin: 0 0 10px;
+    color: #2c3e50;
+}
+
+.produto-conteudo .preco {
     font-size: 1.2rem;
+    font-weight: bold;
+    color: #27ae60;
+    margin-bottom: 10px;
 }
 
-#itens_menu li p {
-    color: #555;
+.produto-conteudo .descricao {
+    font-size: 0.9rem;
+    color: #7f8c8d;
 }
 
-.produto-item {
-    position: relative;  /* Define o item da lista como contêiner para a imagem */
-    padding: 20px;       /* Adiciona um espaçamento ao redor do item */
-    margin-bottom: 20px; /* Espaçamento entre os itens */
-    border: 1px solid #ccc; /* Apenas um exemplo de estilo */
-    background-color: #f9f9f9;
+/* Imagem do produto */
+.produto-imagem-wrapper {
+    text-align: center;
+    margin-bottom: 15px;
 }
 
 .produto-imagem {
-    max-width: 75px;  /* Define o tamanho máximo da largura */
-    height: auto;      /* Mantém a proporção da altura em relação à largura */
-    display: block;    /* Garante que a imagem seja exibida como bloco */
-    position: absolute;  /* Permite o controle do posicionamento */
-    right: 30px;         /* Move a imagem 20px da borda direita */
-    top: 15px; 
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
 }
 
+/* Botão excluir */
+.form-excluir {
+    margin-top: auto;
+    text-align: center;
+}
 
+.btn-excluir {
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-excluir:hover {
+    background-color: #c0392b;
+}
+
+.mensagem-vazia {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #555;
+}
+
+/* Contêiner do formulário */
+.form-container {
+    margin: 0 auto;
+    max-width: 600px;
+    padding: 20px;
+    background: rgb(20, 106, 177, 0.2);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.form-container h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+/* Mensagem de erro */
+.error-message {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+}
+
+/* Formulário */
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Campos de entrada */
 .form-group {
-    margin-bottom: 15px;
     text-align: left;
-
 }
 
 .form-group label {
-    display: block;
-    font-size: 18px;
+    font-size: 1rem;
     margin-bottom: 5px;
-    color: #555;
+    color: #34495e;
 }
 
 .form-group input,
 .form-group textarea {
-    margin: 20px;
-    width: 80%;
-    padding: 8px;
-    font-size: 14px;
-    border: 2px solid #ccc;
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    box-sizing: border-box; /* Evita o "overflow" */
+    box-sizing: border-box;
+    transition: border-color 0.3s;
 }
 
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #2196F3;
+    outline: none;
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+}
+
+/* Botão */
 .button {
-    width: 10%;
-    padding: 10px;
-    margin: 15px 0;
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 1rem;
+    background-color: #2196F3;
+    color: white;
     border: none;
     border-radius: 5px;
-    font-size: 16px;
     cursor: pointer;
-    transition: background 0.3s;
-    background-color: #2196F3; 
-    color:#ccc 
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
 .button:hover {
-    background-color: #1b4466; color: white; 
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
-    transform: translateY(-2px); 
+    background-color: #1b74e4;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
+
+/* Texto de placeholder */
+input::placeholder,
+textarea::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 15px;
+    }
+
+    .button {
+        font-size: 0.9rem;
+    }
+}
+
 
 .btn-excluir {
     background-color: #e74c3c;  /* Vermelho */
@@ -162,6 +295,7 @@ body, html {
 .pedidos-container {
     background: rgba(33, 150, 243, 0.2);
     padding: 20px;
+    margin: 15px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -186,18 +320,17 @@ body, html {
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     font-size: 0.9rem;
+    transition: all 0.2s ease-in-out; /* Adiciona transição para todas as propriedades */
+}
+
+.pedidos-container ul li:hover { 
+    transform: scale(1.01); /* Expanda ligeiramente */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Aumenta a sombra */
 }
 
 .pedidos-container p {
     margin: 10px 0;
     color: #555;
-}
-
-.pedidos-container hr {
-    border: none;
-    height: 1px;
-    background: rgba(33, 150, 243);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .pedidos-container .pedido-actions {

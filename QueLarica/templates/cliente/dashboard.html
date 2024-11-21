@@ -30,29 +30,29 @@
             <!-- Conteúdo Principal -->
             <main class="main-content">
                 {% block content %}
+                <div class="restaurantes-container">
                     <h1>Restaurantes Online</h1>
-                    <div class="restaurantes-container">
-                        {% if restaurantes %}
-                            <ul class="restaurantes-lista">
-                                {% for restaurante in restaurantes %}
-                                    <li class="restaurante-item">
-                                        {% if restaurante.fotoperfil %}
-                                            <img src="{{ url_for('static', filename='uploads/' + restaurante.fotoperfil) }}" alt="Foto de {{ restaurante.nome }}" class="restaurante-foto">
-                                        {% else %}
-                                            <img src="{{ url_for('static', filename='img/restaurante/default-restaurante.png') }}" alt="Foto padrão" class="restaurante-foto">
-                                        {% endif %}
-                                        <div class="restaurante-info">
-                                            <h2>{{ restaurante.nome }}</h2>
-                                            <p class="endereco"><strong>Endereço:</strong> {{ restaurante.endereco }}</p>
-                                        </div>
-                                        <a href="{{ url_for('cardapio', restaurante_id=restaurante.id) }}" class="ver-cardapio-btn">Ver Cardápio</a>
-                                    </li>
-                                {% endfor %}
-                                </ul>
+                    {% if restaurantes %}
+                        <div class="restaurantes-grid">
+                            {% for restaurante in restaurantes %}
+                            <div class="restaurante-card">
+                                {% if restaurante.fotoperfil %}
+                                    <img src="{{ url_for('static', filename='uploads/' + restaurante.fotoperfil) }}" alt="Foto de {{ restaurante.nome }}" class="restaurante-foto">
                                 {% else %}
-                                    <p>Não há restaurantes online no momento.</p>
-                        {% endif %}
-                    </div>
+                                    <img src="{{ url_for('static', filename='img/restaurante/default-restaurante.png') }}" alt="Foto padrão" class="restaurante-foto">
+                                {% endif %}
+                                <div class="restaurante-info">
+                                    <h2>{{ restaurante.nome }}</h2>
+                                    <p class="endereco"><strong>Endereço:</strong> {{ restaurante.endereco }}</p>
+                                </div>
+                                <a href="{{ url_for('cardapio', restaurante_id=restaurante.id) }}" class="ver-cardapio-btn">Ver Cardápio</a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="mensagem-vazia">Não há restaurantes online no momento.</p>
+                    {% endif %}
+                </div>
                 {% endblock %}
             </main>
         </div>

@@ -1,25 +1,26 @@
 {% extends "cliente/dashboard.html" %}
 
 {% block content %}
-<div class="pedidos-container">
 {% if pedidos %}
     {% for pedido in pedidos %}
+    <div class="pedidos-container">
         <h2>Pedido #{{ pedido.id }}</h2>
         <p><strong>Data:</strong> {{ pedido.pedido.data_pedido_formatada }}</p>
         <p><strong>Restaurante:</strong> {{ pedido.pedido.restaurante.nome }}</p>
-
+        <p><strong>Status:</strong> {{ pedido.status }}</p>
+        
         <p><strong>Itens:</strong></p>
         <ul>
             {% for item in pedido.itens %}
-                <li>{{ item.produto.nome }} - {{ item.quantidade }}x R$ {{ "%.2f"|format(item.subtotal) }}</li>
+                <li>{{ item.quantidade }}x {{ item.produto.nome }} - R$ {{ "%.2f"|format(item.subtotal) }}</li>
             {% endfor %}
         </ul>
 
         <p><strong>Total:</strong> R$ {{ "%.2f"|format(pedido.total) }}</p>
-        <hr>
+    </div>
     {% endfor %}
 {% else %}
     <p class="sem-pedidos">Você não tem pedidos no momento.</p>
 {% endif %}
-</div>
+
 {% endblock %}

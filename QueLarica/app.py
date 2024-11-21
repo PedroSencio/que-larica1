@@ -487,6 +487,7 @@ def meus_pedidos():
         # Adicionar as informações detalhadas do pedido
         pedidos_detalhados.append({
             'id': pedido.id,
+            'status': pedido.status,
             'pedido': pedido,
             'itens': itens,
             'total': total_pedido
@@ -653,7 +654,7 @@ def enviar_para_entrega():
     pedido = Pedido.query.get(pedido_id)
 
     if pedido and pedido.status == 'Confirmado':
-        pedido.status = 'Em Entrega'
+        pedido.status = 'Pedido Pronto Para Entrega'
         db.session.commit()
         flash('Pedido enviado para entrega!', 'success')
 
@@ -734,7 +735,7 @@ def dashboard_entregador():
     if not entregador:
         return redirect(url_for('home'))
     
-    pedidos = Pedido.query.filter_by(status='Em Entrega').all()
+    pedidos = Pedido.query.filter_by(status='Pedido Pronto Para Entrega').all()
     
     pedidos_resultado = []
     for pedido in pedidos:
@@ -801,7 +802,7 @@ def aceitar_entrega():
     pedido_id = request.form.get('pedido_id')
     pedido = Pedido.query.get(pedido_id)
 
-    if pedido and pedido.status == 'Em Entrega':
+    if pedido and pedido.status == 'Pedido Pronto Para Entrega':
         pedido.status = 'Em Transporte'
         pedido.entregador_id = session['user_id']
         db.session.commit()

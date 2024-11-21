@@ -1,25 +1,35 @@
 {% extends 'restaurante/dashboard.html' %}
 {% block content %}
+<div class="form-container">
     <h1>Cadastrar Novo Produto</h1>
 
     {% if error_message %}
-        <p style="color: red;">{{ error_message }}</p>
+        <div class="error-message">{{ error_message }}</div>
     {% endif %}
 
-    <form class="form-group" id="form-group" method="POST" enctype="multipart/form-data">
-        <label for="nome">Nome do Produto:</label>
-        <input type="text" name="nome" id="nome" required><br>
+    <form class="formulario" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <p><label for="nome">Nome do Produto:</label></p>
+            <input type="text" name="nome" id="nome" placeholder="Digite o nome do produto" required>
+        </div>
 
-        <label for="descricao">Descrição:</label>
-        <textarea type="text" name="descricao" id="descricao" required></textarea><br>
+        <div class="form-group">
+            <p><label for="descricao">Descrição:</label></p>
+            <textarea name="descricao" id="descricao" placeholder="Descreva o produto" required></textarea>
+        </div>
 
-        <label for="preco">Preço:</label>
-        <input type="number" step="0.01" name="preco" id="preco" required><br>
+        <div class="form-group">
+            <p><label for="preco">Preço:</label></p>
+            <input type="number" step="0.01" name="preco" id="preco" placeholder="Digite o preço" required>
+        </div>
 
-        <label for="imagem">Imagem (opcional):</label>
-        <input type="file" name="imagem" id="imagem"><br>
+        <div class="form-group">
+            <p><label for="imagem">Imagem (opcional):</label></p>
+            <input type="file" name="imagem" id="imagem">
+        </div>
 
-        <button type="submit" class="button" id="button">Cadastrar Produto</button>
+        <button type="submit" class="button">Cadastrar Produto</button>
     </form>
-</body>
+</div>
 {% endblock %}
+

@@ -1,9 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
 /* Dashboard Entregador */
 body, html {
     margin: 0;
     padding: 0; 
     height: 100%;
-    font-family: Arial, sans-serif;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .dashboard-container {
@@ -33,23 +35,30 @@ body, html {
 }
 
 .sidebar-nav li {
-    padding: 15px;
-    border-bottom: 1px solid #a56e1c;
+    padding: 20px;
+    border-bottom: 1px solid #da8300;
 }
 
 .sidebar-nav a {
     text-decoration: none;
     color: white;
-    display: block;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
 }
 
 .sidebar-nav a:hover {
-    background-color: #a56e1c;
+    background-color: #da8300;
+    border-radius: 5px;
+    padding-left: 10px;
+    transition: all 0.2s ease;
 }
 
 .main-content {
     flex: 1;
-    background-color: #f4f4f4;
+    background: url('/static/img/dashboard/backgroud.png') no-repeat center center fixed;
     padding: 20px;
     overflow-y: auto;
 }
@@ -109,6 +118,7 @@ body, html {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 15px;
 }
 
 .entrega-concluir-container h2 {
@@ -131,7 +141,14 @@ body, html {
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     font-size: 0.9rem;
+    transition: all 0.2s ease-in-out;
 }
+
+.entrega-concluir-container ul li:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 
 .entrega-concluir-container p {
     margin: 10px 0;
