@@ -96,6 +96,7 @@ class Pedido(db.Model):
     entregador_id = db.Column(db.Integer, db.ForeignKey('entregadores.id'), nullable=True)
     status = db.Column(db.String(20), default="Aguardando Confirmação")  
     data_pedido = db.Column(db.DateTime, default=datetime.now)
+    forma_pagamento = db.Column(db.String(20), nullable=True)
     itens = db.relationship('ItemPedido', backref='pedido', lazy=True)
     cliente = db.relationship('Cliente', backref='pedidos')
     restaurante = db.relationship('Restaurante', backref='pedidos')
@@ -397,27 +398,6 @@ def remover_do_carrinho():
     db.session.commit()
 
     return redirect('/carrinho')  # Redireciona para o carrinho atualizado
-
-    if item:
-        item.quantidade += quantidade
-        item.subtotal += item.produto.preco * quantidade
-    else:
-        produto = Produto.query.get(produto_id)
-        if not produto:
-            return {"success": False, "message": "Produto não encontrado"}, 404
-
-        item = ItemCarrinho(
-            carrinho_id=carrinho.id,
-            produto_id=produto_id,
-            quantidade=quantidade,
-            subtotal=produto.preco * quantidade
-        )
-        db.session.add(item)
-
-    carrinho.total += item.produto.preco * quantidade
-    db.session.commit()
-
-    return {"success": True, "message": "Produto adicionado ao carrinho"}
 
 @app.route('/finalizar_pedido', methods=['POST'])
 @login_required
