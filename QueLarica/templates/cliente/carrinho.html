@@ -39,7 +39,20 @@
     <div class="carrinho-total">
         <p>Total: <span>R$ {{ "%.2f"|format(carrinho.total) }}</span></p>
         <form method="POST" action="{{ url_for('finalizar_pedido') }}">
-            <button type="submit" class="btn-finalizar-compra">Finalizar Compra</button>
+            <div class="forma-pagamento">
+                <h3>Escolha a forma de pagamento</h3>
+                <div class="opcoes-pagamento">
+                    <label>
+                        <input type="radio" name="forma_pagamento" value="cartao" required>
+                        Cartão
+                    </label>
+                    <label>
+                        <input type="radio" name="forma_pagamento" value="pix" required>
+                        Pix
+                    </label>
+                </div>
+                <button type="submit" class="btn-finalizar-compra">Finalizar Compra</button>
+            </div>
         </form>
     </div>
 

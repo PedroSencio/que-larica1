@@ -9,7 +9,19 @@
 </head>
 
 <body>
-
+<div class="container-aviso">
+        <!-- Exibe mensagens flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="alerts">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
 <div class="container" id="main-container">
 
     <div class="button-return" id="button-return">
@@ -48,6 +60,7 @@
         alert("{{ error_message }}");
     </script>
 {% endif %}
+<script src="{{ url_for('static', filename='script/home/popup.js') }}"></script>
 
 </body>
 </html>

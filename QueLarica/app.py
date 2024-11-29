@@ -175,7 +175,6 @@ def logout():
 
 @app.route('/cadastro_cliente', methods=['GET', 'POST'])
 def cadastro_cliente():
-    
     if request.method == 'POST':
         # Pega os dados do formulário
         nome = request.form['nome']
@@ -198,7 +197,7 @@ def cadastro_cliente():
         try:
             db.session.add(novo_cliente)
             db.session.commit()
-            return redirect(url_for('sucesso'))
+            flash("Cadastro realizado com sucesso!", "success")
         except IntegrityError:
             db.session.rollback()  # Reverte a transação se ocorrer erro
             return render_template('cliente/cadastro.html', error_message="Erro ao salvar: CPF ou Email já cadastrados.")
@@ -228,12 +227,11 @@ def cadastro_restaurante():
         try:
             db.session.add(novo_restaurante)
             db.session.commit()
-            return redirect(url_for('sucesso'))
+            flash("Cadastro realizado com sucesso!", "success")
         except IntegrityError:
             db.session.rollback()  
             return render_template('restaurante/cadastro.html', error_message="Erro ao salvar: CNPJ ou Email já cadastrados.")
 
-        return redirect(url_for('sucesso')) 
 
     return render_template('restaurante/cadastro.html')
 
@@ -258,18 +256,12 @@ def cadastro_entregador():
         try:
             db.session.add(novo_entregador)
             db.session.commit()
-            return redirect(url_for('sucesso'))
+            flash("Cadastro realizado com sucesso!", "success")
         except IntegrityError:
             db.session.rollback()  
             return render_template('entregador/cadastro.html', error_message="Erro ao salvar: CPF ou Email já cadastrados.")
-        
-        return redirect(url_for('sucesso')) 
 
     return render_template('entregador/cadastro.html')
-
-@app.route('/sucesso')
-def sucesso():
-    return "Cadastro realizado com sucesso!"
 
 @app.route('/dashboard_cliente')
 @login_required
@@ -399,24 +391,20 @@ def remover_do_carrinho():
 
     return redirect('/carrinho')  # Redireciona para o carrinho atualizado
 
-@app.route('/finalizar_pedido', methods=['POST'])
-@login_required
-def finalizar_pedido():
-    if session['user_type'] != 'cliente':
-        return redirect('/')
-
+def atualizar_pedidos_e_limpar_carrinho(forma_pagamento):
     cliente_id = session['user_id']
     carrinho = Carrinho.query.filter_by(cliente_id=cliente_id).first()
+    restaurante_id = carrinho.itens[0].produto.restaurante_id 
+
     if not carrinho or not carrinho.itens:
-        return redirect('/carrinho')  # Se o carrinho estiver vazio, redireciona de volta
+        return None  # Retorna None se o carrinho estiver vazio
 
     # Criar o pedido
-    restaurante_id = carrinho.itens[0].produto.restaurante_id  # Assumindo que todos os itens são do mesmo restaurante
-    pedido = Pedido(cliente_id=cliente_id, restaurante_id=restaurante_id)
+    pedido = Pedido(cliente_id=cliente_id, restaurante_id=restaurante_id, forma_pagamento=forma_pagamento)
     db.session.add(pedido)
     db.session.commit()
 
-    # Criar os itens do pedido
+    # Associar os itens do carrinho ao pedido
     for item in carrinho.itens:
         item_pedido = ItemPedido(
             pedido_id=pedido.id,
@@ -426,16 +414,42 @@ def finalizar_pedido():
         )
         db.session.add(item_pedido)
 
-    # Remover os itens do carrinho antes de excluir o carrinho
+    # Limpar o carrinho
     for item in carrinho.itens:
         db.session.delete(item)
-        
-
-    # Excluir o carrinho
     db.session.delete(carrinho)
     db.session.commit()
 
-    return redirect(url_for('meus_pedidos'))  # Redireciona para a página de pedidos do cliente
+    return pedido
+
+
+@app.route('/finalizar_pedido', methods=['POST'])
+@login_required
+def finalizar_pedido():
+    if session['user_type'] != 'cliente':
+        return redirect('/')
+
+    forma_pagamento = request.form.get('forma_pagamento')
+
+    if forma_pagamento == "pix":
+        return redirect(url_for('pagina_pix'))
+    else:
+        atualizar_pedidos_e_limpar_carrinho("Cartao")
+        return redirect(url_for('meus_pedidos'))
+    
+@app.route('/pagina_pix', methods=['GET', 'POST'])
+@login_required
+def pagina_pix():
+    cliente_id = session['user_id']
+    cliente = Cliente.query.get(cliente_id)
+    # Exibe o QR Code e botão de confirmação de pagamento
+
+    if request.method == 'POST':
+        atualizar_pedidos_e_limpar_carrinho("PIX")
+        db.session.commit()
+        return redirect(url_for('meus_pedidos'))
+
+    return render_template('cliente/pix.html', cliente=cliente)
 
 @app.route('/meus_pedidos')
 @login_required
