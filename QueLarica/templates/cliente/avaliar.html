@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliar Pedido</title>
+</head>
+<body>
+    <h1>Avaliar Pedido #{{ pedido.id }}</h1>
+    <form method="POST">
+        <label for="nota">Nota (1 a 5):</label>
+        <select name="nota" id="nota" required>
+            <option value="1">1 - Péssimo</option>
+            <option value="2">2 - Ruim</option>
+            <option value="3">3 - Regular</option>
+            <option value="4">4 - Bom</option>
+            <option value="5">5 - Excelente</option>
+        </select>
+        <br>
+        <label for="comentario">Comentário (opcional):</label>
+        <textarea name="comentario" id="comentario" rows="4"></textarea>
+        <br>
+        <button type="submit">Enviar Avaliação</button>
+    </form>
+</body>
+</html>

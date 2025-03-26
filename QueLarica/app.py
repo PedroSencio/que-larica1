@@ -819,5 +819,21 @@ def finalizar_entrega():
 
     return redirect(url_for('dashboard_entregador'))
 
+@app.route('/avaliar/<int:pedido_id>', methods=['GET', 'POST'])
+@login_required
+def avaliar_pedido(pedido_id):
+    pedido = Pedido.query.get_or_404(pedido_id)
+    if request.method == 'POST':
+        nota = int(request.form['nota'])
+        comentario = request.form.get('comentario', '')
+        nova_avaliacao = Avaliacao(pedido_id=pedido_id, nota=nota, comentario=comentario)
+        db.session.add(nova_avaliacao)
+        db.session.commit()
+
+        flash('Obrigado pela sua avaliação!', 'success')
+        return redirect(url_for('dashboard_cliente'))
+    
+    return render_template('cliente/avaliar.html', pedido=pedido)
+
 if __name__ == "__main__":
     app.run(debug=True)
